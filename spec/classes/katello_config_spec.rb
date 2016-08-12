@@ -24,12 +24,17 @@ describe 'katello::config' do
       end
 
       it 'should generate correct katello.yaml' do
+        if Puppet.version < '4.0'
+          puppet_repo_root = '/etc/puppet/environments/'
+        else
+          puppet_repo_root = '/etc/puppetlabs/code/environments/'
+        end
         should contain_file('/etc/foreman/plugins/katello.yaml')
-        content = catalogue.resource('file', '/etc/foreman/plugins/katello.yaml').send(:parameters)[:content]
-        content.split("\n").reject { |c| c =~ /(^#|^$|^.*puppet_repo_root.*$)/ }.should == [
+        verify_exact_contents(catalogue, '/etc/foreman/plugins/katello.yaml', [
           ':katello:',
           '  :rest_client_timeout: 3600',
           '  :post_sync_url: https://foo.example.com/katello/api/v2/repositories/sync_complete?token=test_token',
+          "  :puppet_repo_root: #{puppet_repo_root}",
           '  :candlepin:',
           '    :url: https://foo.example.com:8443/candlepin',
           '    :oauth_key: katello',
@@ -41,8 +46,7 @@ describe 'katello::config' do
           '  :qpid:',
           "    :url: amqp:ssl:#{facts[:fqdn]}:5671",
           '    :subscriptions_queue_address: katello_event_queue'
-        ]
-        content.should =~ /^.*:puppet_repo_root: \/etc\/puppet.*$/
+        ])
       end
     end
 
@@ -63,12 +67,18 @@ describe 'katello::config' do
       end
 
       it 'should generate correct katello.yaml' do
+        if Puppet.version < '4.0'
+          puppet_repo_root = '/etc/puppet/environments/'
+        else
+          puppet_repo_root = '/etc/puppetlabs/code/environments/'
+        end
+
         should contain_file('/etc/foreman/plugins/katello.yaml')
-        content = catalogue.resource('file', '/etc/foreman/plugins/katello.yaml').send(:parameters)[:content]
-        content.split("\n").reject { |c| c =~ /(^#|^$|^.*puppet_repo_root.*$)/ }.should == [
+        verify_exact_contents(catalogue, '/etc/foreman/plugins/katello.yaml', [
           ':katello:',
           '  :rest_client_timeout: 3600',
           '  :post_sync_url: https://foo.example.com/katello/api/v2/repositories/sync_complete?token=test_token',
+          "  :puppet_repo_root: #{puppet_repo_root}",
           '  :candlepin:',
           '    :url: https://foo.example.com:8443/candlepin',
           '    :oauth_key: katello',
@@ -85,8 +95,7 @@ describe 'katello::config' do
           '    :port: 8888',
           '    :user: admin',
           '    :password: secret_password'
-        ]
-        content.should =~ /^.*:puppet_repo_root: \/etc\/puppet.*$/
+        ])
       end
     end
   end
