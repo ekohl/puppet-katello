@@ -97,6 +97,8 @@
 #
 # $use_pulp_2_for_yum::    Configures Katello to use Pulp 2 for yum content
 #
+# $hosts_queue_workers::   Configures the number of workers handling the hosts_queue queue.
+#
 class katello (
   Optional[String] $candlepin_oauth_key = undef,
   Optional[String] $candlepin_oauth_secret = undef,
@@ -144,6 +146,8 @@ class katello (
   Boolean $pulp_db_unsafe_autoretry = false,
   Optional[Enum['majority', 'all']] $pulp_db_write_concern = undef,
   Boolean $pulp_manage_db = true,
+
+  Integer[0] $hosts_queue_workers = 1,
 ) {
 
   package { 'katello':
@@ -182,6 +186,7 @@ class katello (
     use_pulp_2_for_docker => $use_pulp_2_for_docker,
     use_pulp_2_for_yum    => $use_pulp_2_for_yum,
     repo_export_dir       => $repo_export_dir,
+    hosts_queue_workers   => $hosts_queue_workers,
   }
 
   if $katello::params::pulp2_support {

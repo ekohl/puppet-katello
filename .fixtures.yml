@@ -11,7 +11,9 @@ fixtures:
       repo: 'https://github.com/puppetlabs/puppetlabs-cron_core'
       puppet_version: '>= 6.0.0'
     extlib:        "https://github.com/voxpupuli/puppet-extlib"
-    foreman:       "https://github.com/theforeman/puppet-foreman.git"
+    foreman:
+      repo: "https://github.com/theforeman/puppet-foreman.git"
+      branch: dynflow-pool
     mongodb:       "https://github.com/voxpupuli/puppet-mongodb.git"
     postgresql:    "https://github.com/puppetlabs/puppetlabs-postgresql.git"
     pulp:          "https://github.com/theforeman/puppet-pulp.git"

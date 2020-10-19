@@ -15,12 +15,16 @@
 # @param repo_export_dir
 #   Create a repository export directory for Katello to use
 #
+# @param hosts_queue_workers
+#   The number of workers handling the hosts_queue queue.
+#
 class katello::application (
   Integer[0] $rest_client_timeout = 3600,
   Boolean $use_pulp_2_for_file = false,
   Boolean $use_pulp_2_for_docker = false,
   Boolean $use_pulp_2_for_yum = false,
   Stdlib::Absolutepath $repo_export_dir = '/var/lib/pulp/katello-export',
+  Integer[0] $hosts_queue_workers = 1,
 ) {
   include foreman
   include certs
@@ -87,8 +91,9 @@ class katello::application (
   }
 
   if $foreman::jobs_manage_service {
-    foreman::dynflow::worker { 'worker-hosts-queue':
-      queues => ['hosts_queue'],
+    foreman::dynflow::pool { 'worker-hosts-queue':
+      instances => $hosts_queue_workers,
+      queues    => ['hosts_queue'],
     }
   }
 
